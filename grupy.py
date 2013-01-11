@@ -3,6 +3,7 @@ import sys
 sys.path.append('/home/marta/COG-ABM/src')
 
 import random
+import math
 
 from cog_abm.core import Simulation, Agent
 from cog_abm.core.interaction import Interaction #czy tego potrzebuje? jesli tak - do rozrodu.
@@ -13,6 +14,8 @@ init_num_agents = 100
 init_num_groups =
 a_death =
 b_death =
+c_death =
+d_death =
 a_breed =
 b_breed =
 iters = 500000
@@ -48,11 +51,16 @@ class GroupAgentState(object):
     def get_sex(self)
         return self.sex
     def get_deathProb(self,cooperation,N)
-        return deathProb(a=a_death,b=b_death,cost=self.gen,cooperation,N)
-        #define deathProb, breedProb (outside)
+        return deathProb(self.gen,cooperation,N)
 
 class GroupInteraction(Interaction): #???
     #TODO
+
+def deathProb(cost,help,N,a=a_death,b=b_death,c=c_death,d=d_death)
+    return 1/(1+math.exp(a*N+c*help+d*cost+b))
+
+def breedProb(N,a=a_breed,b=b_breed)
+    return 1/(1+math.exp(a*N+b))
 
 def prepare_agents(num_agents, num_groups): #jakie jeszcze parametry?
     #TODO
