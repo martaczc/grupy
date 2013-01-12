@@ -6,10 +6,10 @@ sys.path.append('/home/marta/COG-ABM/src')
 import random
 import math
 
-from cog_abm.core import Simulation, Agent
-from cog_abm.core.interaction import Interaction #czy tego potrzebuje? jesli tak - do rozrodu.
-from cog_abm.extras.additional_tools import generate_simple_network #czy tego potrzebuje? jesli tak, do wyboru ojca potomstwa.
-from cog_abm.extras.tools import avg
+#from cog_abm.core import Simulation, Agent
+#from cog_abm.core.interaction import Interaction #czy tego potrzebuje? jesli tak - do rozrodu.
+#from cog_abm.extras.additional_tools import generate_simple_network #czy tego potrzebuje? jesli tak, do wyboru ojca potomstwa.
+#from cog_abm.extras.tools import avg
 
 init_num_agents = 100
 init_num_groups =
@@ -23,20 +23,19 @@ iters = 500000
 dump_freq = iters / 100
 
 class GroupState(object):
-    def __init__(self,n=0,a=[]):
-        self.number=n
+    def __init__(self,a):
         self.agents=a
         self.cooperation=sum([agent.state.get_genValue() for agent in self.agents])
         self.N=self.agents.length
     def get_agent(self,i)
         return self.agents[i]
-    def get_number(self)
-        return self.number
-    def get_agentNumber(self)
+    def get_NumberOfAgents(self)
         return self.N
     def get_cooperation(self)
         return self.cooperation
-    def update(self,a) 
+    def get_breedProb(self)
+        return def breedProb(self.N)
+    def update(self,a) #?
         self.agents=a
         self.cooperation=sum([agent.state.get_genValue() for agent in self.agents])
         self.N=self.agents.length          
@@ -51,10 +50,24 @@ class GroupAgentState(object):
         return self.sex
     def get_deathProb(self,cooperation,N)
         return deathProb(self.gen,cooperation,N)
+    def mutate(self)
+        return GroupAgentState(g=get.gen.value+random.gauss(0,1))
 
 class Group(object): 
-    def __init__(self,s)
-        self.state=s
+    def __init__(self,state)
+        self.state=state
+
+class Agent(object):
+    def __init__(self,state)
+        self.state=state
+    def breed(self)
+        return Agent(state=self.state.mutate())
+
+class Simulation(object):
+    def __init__(self, graph=None, groups=None):
+        self.graph=graph
+        self.groups=groups
+    #TODO
 
 def deathProb(cost,help,N,a=a_death,b=b_death,c=c_death,d=d_death)
     return 1/(1+math.exp(a*N+c*help+d*cost+b))
@@ -62,24 +75,20 @@ def deathProb(cost,help,N,a=a_death,b=b_death,c=c_death,d=d_death)
 def breedProb(N,a=a_breed,b=b_breed)
     return 1/(1+math.exp(a*N+b))
 
-def breed(agent)
-    return Agent(state=GroupAgentstate(g=agent.state.gen+random.gauss(0,1)))
-
-def prepare_agents(num_agents):
-    agents = [Agent(state=GroupAgentState())
-        for _ in xrange(init_num_agents)]
-    return agents
-
-def prepare_groups(num_groups):
-    groups = [Group(state=GroupState())
-        for _ in xrange(init_num_groups)]
+def prepare_groups(num_agents,num_groups): #czy zagnieżdżanie funkcji działa?
+    def prepare_agents(num_agents):
+        agents = [Agent(state=GroupAgentState())
+            for _ in xrange(init_num_agents)]
+        return agents
+    groups = [Group(state=GroupState(prepare_agents(num_agents)))
+        for n in xrange(init_num_groups)]
 
 def group_experiment(num_agents, num_groups, iters): #jakie jeszcze parametry?
-    #TODO
-    agents = prepare_agents(num_agents, num_groups) #jakie jeszcze parametry?
-    topology = generate_simple_network(agents) #?
+    groups = prepare_groupss(init_num_agents, init_num_groups) #jakie jeszcze parametry?
+    #topology = generate_simple_network(agents) #?
     s = Simulation(topology, GroupInteraction(), agents) #?
     return s.run(iters, DUMP_FREQ)
+    #TODO
 
 def analyze(results):
     #TODO
