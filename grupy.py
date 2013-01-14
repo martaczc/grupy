@@ -5,6 +5,8 @@ sys.path.append('/home/marta/COG-ABM/src')
 
 import random
 import math
+from time import time
+from ..extras.tools import get_progressbar
 
 #from cog_abm.core import Simulation, Agent
 #from cog_abm.core.interaction import Interaction #czy tego potrzebuje? jesli tak - do rozrodu.
@@ -22,6 +24,8 @@ b_breed =
 iters = 500000
 dump_freq = iters / 100
 
+max_number=0
+
 class GroupState(object):
     def __init__(self,a):
         self.agents=a
@@ -29,16 +33,16 @@ class GroupState(object):
         self.N=self.agents.length
     def get_agent(self,i)
         return self.agents[i]
+    def add_agent(self,agent)
+        self.agents.append(agent)
     def get_NumberOfAgents(self)
         return self.N
     def get_cooperation(self)
         return self.cooperation
     def get_breedProb(self)
         return def breedProb(self.N)
-    def update(self,a) #?
-        self.agents=a
-        self.cooperation=sum([agent.state.get_genValue() for agent in self.agents])
-        self.N=self.agents.length          
+    def update(self)
+        agents         
 
 class GroupAgentState(object):
     def __init__(self,s='f',g=0)
@@ -67,6 +71,14 @@ class Simulation(object):
     def __init__(self, graph=None, groups=None):
         self.graph=graph
         self.groups=groups
+        self.statistic = []
+    def dump_results(self, iter_num):
+        cc = copy.deepcopy(self.agents)
+        #cc = [a.deepcopy() for a in self.agents]
+        kr = (iter_num, cc)
+        self.statistic.append(kr)
+    def iteration
+        for 
     #TODO
 
 def deathProb(cost,help,N,a=a_death,b=b_death,c=c_death,d=d_death)
