@@ -27,18 +27,18 @@ Dla uproszczenia modelu, a także by lepiej oddać własności bakterii (które 
 
 To, czy osobnik jest altruistą, będzie się przejawiało w prawdopodobieństwie rozmnożenia się osobnika w danym kroku czasowym, które określiłam wzorem:
 
-$p_div = 1/(1+exp(a_div*N_i+b_div+C+d*H_i)) $ 
+p_div = 1/(1+exp(a_div*N_i+b_div+C+d*H_i))  
 
 Jest to często stosowany w ekologii wzór logistyczny, którego parametry oznaczają odpowiednio:
 
-* $N_i$ - liczebność i-tej subpopulacji
-* $a$ - współczynnik odpowiadający za intensywność konkurencji między osobnikami
-* $b$ - dodatkowy parametr pozwalający ustalić prawdopodobieństwo podziału przy braku wpływów innych osobników
-* $C$ - koszt altruizmu (jeśli osobnik jest altruistą)
-* $d$ - współczynnik związany ze skutecznością pomocy ze strony innych osobników
-* $H_i$ - pomoc ze strony innych osobników, zadana wzorem:
+* N_i - liczebność i-tej subpopulacji
+* a_div - współczynnik odpowiadający za intensywność konkurencji między osobnikami
+* b_div - dodatkowy parametr pozwalający ustalić prawdopodobieństwo podziału przy braku wpływów innych osobników
+* C - koszt altruizmu (jeśli osobnik jest altruistą)
+* d - współczynnik związany ze skutecznością pomocy ze strony innych osobników
+* H_i - pomoc ze strony innych osobników, zadana wzorem:
 
-$H_i =(sum_j(g_j))/N_i$
+H_i =(sum_j(g_j))/N_i
 
 Gdzie g_j oznacza wartość genu altruizmu kolejnych osobników w subpopulacji i-tej (1, jeśli j-ty osobnik jest altruistą i 0 w przeciwnym przypadku). Parametry zamierzam ustalić w ten sposób, by prawdopodobieństwo rozrodu było malejącą funkcją liczebności populacji i kosztów altruizmu, natomiast rosnącą funkcją pomocy ze strony innych osobników.
 
@@ -46,7 +46,7 @@ Prawdopodobieństwo śmierci poszczególnych osobników zamierzam ustalić jako 
 
 Zamierzam przyjąć, że prawdopodobieństwo emigracji w pojedynczym kroku czasowym będzie zależne wyłącznie od liczebności populacji macierzystej i będzie zadane wzorem:
 
-$p_mig = 1/(1+exp(a_m*N_i+b_m))$
+p_mig = 1/(1+exp(a_m*N_i+b_m))
 
 Gdzie a_m i b_m to parametry związane z migracją
 
@@ -72,8 +72,8 @@ Wreszcie można tak zmienić model, aby bardziej odpowiadał rzeczywistym sytuac
 
 #Literatura#
 
-*Hanski, I.,Simberloff, D.(1997) "The Metapopulation Approach: Its History, Conceptual Domain and Application to Conservation" in: Hanski, I., M. E. Gulpin (red.), "Metapopulation Biology. Ecology, Genetics and Evolution" Academic Press 
-*Levins, R. (1969), "Some demographic and genetic consequences of environmental heterogeneity for biological control", Bulletin of the Entomological Society of America 15: 237–240
-*Olivieri, I., Gouyon, P. H. (1997), "Evolution of Migration Rates and Other Traits: The Metapopulation Effect" in: Hanski, I., M. E. Gulpin (red.), "Metapopulation Biology. Ecology, Genetics and Evolution", Academic Press: 293-321
-*Sokół, M. 2009. Minipodręcznik programowania populacji, układów populacji, dziedziczenia i ewolucji w języku Pascal dla studentów ekologii i ochrony środowiska.Uniwersytet Warszawski, Wydział Biologii, on line: www.biol.uw.edu.pl/informatyka, Pascal-Minipodręcznik.
-*Kurdej, K., Łukasik M., Maj M., Plewczyński D., Rakowski F. (2012) "Agent Based Modeling of cognitive processes in both populations and single cognitive system" on line: https://github.com/cogcomp/cog-abm
+* Hanski, I.,Simberloff, D.(1997) "The Metapopulation Approach: Its History, Conceptual Domain and Application to Conservation" in: Hanski, I., M. E. Gulpin (red.), "Metapopulation Biology. Ecology, Genetics and Evolution" Academic Press 
+* Kurdej, K., Łukasik M., Maj M., Plewczyński D., Rakowski F. (2012) "Agent Based Modeling of cognitive processes in both populations and single cognitive system" on line: https://github.com/cogcomp/cog-abm
+* Levins, R. (1969), "Some demographic and genetic consequences of environmental heterogeneity for biological control", Bulletin of the Entomological Society of America 15: 237–240
+* Olivieri, I., Gouyon, P. H. (1997), "Evolution of Migration Rates and Other Traits: The Metapopulation Effect" in: Hanski, I., M. E. Gulpin (red.), "Metapopulation Biology. Ecology, Genetics and Evolution", Academic Press: 293-321
+* Sokół, M. 2009. Minipodręcznik programowania populacji, układów populacji, dziedziczenia i ewolucji w języku Pascal dla studentów ekologii i ochrony środowiska.Uniwersytet Warszawski, Wydział Biologii, on line: www.biol.uw.edu.pl/informatyka, Pascal-Minipodręcznik.
