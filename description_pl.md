@@ -38,7 +38,7 @@ Jest to często stosowany w ekologii wzór logistyczny, którego parametry oznac
 * d - współczynnik związany ze skutecznością pomocy ze strony innych osobników
 * H<sub>i</sub> - pomoc ze strony innych osobników, zadana wzorem:
 
-![H_i =(sum_j(g_j))/N_i](http://www.sciweavers.org/tex2img.php?eq=%24H_i%20%3D%5Cfrac%7B%5Csum%5Climits_%7Bj%3D1%7D%5E%7BN_i%7Dg_j%7D%7BN_i%7D%24&bc=White&fc=Black&im=png&fs=24&ff=modern&edit=0)
+![H_i =(sum_j(g_j))/N_i](http://www.sciweavers.org/tex2img.php?eq=%24H_i%20%3D%5Cfrac%7B%5Csum%5Climits_%7Bj%3D1%7D%7BN_i%7Dg_j%7D%7BN_i%7D%24&bc=White&fc=Black&im=png&fs=24&ff=modern&edit=0)
 
 Gdzie g<sub>j</sub> oznacza wartość genu altruizmu kolejnych osobników w subpopulacji i-tej (1, jeśli j-ty osobnik jest altruistą i 0 w przeciwnym przypadku). Parametry zamierzam ustalić w ten sposób, by prawdopodobieństwo rozrodu było malejącą funkcją liczebności populacji i kosztów altruizmu, natomiast rosnącą funkcją pomocy ze strony innych osobników.
 
