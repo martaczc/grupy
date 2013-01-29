@@ -27,7 +27,7 @@ Dla uproszczenia modelu, a także by lepiej oddać własności bakterii (które 
 
 To, czy osobnik jest altruistą, będzie się przejawiało w prawdopodobieństwie rozmnożenia się osobnika w danym kroku czasowym, które określiłam wzorem:
 
-p_div = 1/(1+exp(a_div*N_i+b_div+C+d*H_i))  
+![p_div = 1/(1+exp(a_div*N_i+b_div+C+d*H_i))](http://mathb.in/1692?key=a5f6be3f84242b149f87113f89bf7fd2449977c9)  
 
 Jest to często stosowany w ekologii wzór logistyczny, którego parametry oznaczają odpowiednio:
 
