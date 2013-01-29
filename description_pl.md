@@ -27,28 +27,28 @@ Dla uproszczenia modelu, a także by lepiej oddać własności bakterii (które 
 
 To, czy osobnik jest altruistą, będzie się przejawiało w prawdopodobieństwie rozmnożenia się osobnika w danym kroku czasowym, które określiłam wzorem:
 
-![p_div = 1/(1+exp(a_div*N_i+b_div+C+d*H_i))](http://www.sciweavers.org/tex2img.php?eq=%24p_%7Bdiv%7D%3D%5Cfrac%7B1%7D%7B1%2Be%5E%7B-%28a_%7Bdiv%7DN_i%2Bb_%7Bdiv%7D%2BC%2BdH_i%29%7D%7D%24&bc=White&fc=Black&im=png&fs=24&ff=modern&edit=0)  
+![p_div = 1/(1+exp(a_div*N_i+b_div+C+d*H_i))](http://www.sciweavers.org/tex2img.php?eq=%24p_%7Bdiv%7D%3D%5Cfrac%7B1%7D%7B1%2Be%5E%7B-%28a_%7Bdiv%7DN_i%2Bb_%7Bdiv%7D%2BC%2BdH_i%29%7D%7D%24&bc=White&fc=Black&im=png&fs=24&ff=modern&edit=0)
 
 Jest to często stosowany w ekologii wzór logistyczny, którego parametry oznaczają odpowiednio:
 
-* N_i - liczebność i-tej subpopulacji
-* a_div - współczynnik odpowiadający za intensywność konkurencji między osobnikami
-* b_div - dodatkowy parametr pozwalający ustalić prawdopodobieństwo podziału przy braku wpływów innych osobników
+* N,,i,, - liczebność i-tej subpopulacji
+* a,,div,, - współczynnik odpowiadający za intensywność konkurencji między osobnikami
+* b,,div,, - dodatkowy parametr pozwalający ustalić prawdopodobieństwo podziału przy braku wpływów innych osobników
 * C - koszt altruizmu (jeśli osobnik jest altruistą)
 * d - współczynnik związany ze skutecznością pomocy ze strony innych osobników
-* H_i - pomoc ze strony innych osobników, zadana wzorem:
+* H,,i,, - pomoc ze strony innych osobników, zadana wzorem:
 
-H_i =(sum_j(g_j))/N_i
+![H_i =(sum_j(g_j))/N_i](http://www.sciweavers.org/tex2img.php?eq=%24H_i%20%3D%5Cfrac%7B%5Csum%5Climits_%7Bj%3D1%7D%5E%7BN_i%7Dg_j%7D%7BN_i%7D%24&bc=White&fc=Blue&im=png&fs=24&ff=modern&edit=0)
 
-Gdzie g_j oznacza wartość genu altruizmu kolejnych osobników w subpopulacji i-tej (1, jeśli j-ty osobnik jest altruistą i 0 w przeciwnym przypadku). Parametry zamierzam ustalić w ten sposób, by prawdopodobieństwo rozrodu było malejącą funkcją liczebności populacji i kosztów altruizmu, natomiast rosnącą funkcją pomocy ze strony innych osobników.
+Gdzie g,,j,, oznacza wartość genu altruizmu kolejnych osobników w subpopulacji i-tej (1, jeśli j-ty osobnik jest altruistą i 0 w przeciwnym przypadku). Parametry zamierzam ustalić w ten sposób, by prawdopodobieństwo rozrodu było malejącą funkcją liczebności populacji i kosztów altruizmu, natomiast rosnącą funkcją pomocy ze strony innych osobników.
 
 Prawdopodobieństwo śmierci poszczególnych osobników zamierzam ustalić jako stałą (p_death). W ten sposób można oszacować spodziewaną liczebność danej subpopulacji przy określonym udziale altruistów, przyjmując, że jest to taka liczebność, przy której rozrodczość równoważy śmiertelność (wzór). Wzór ten ma sens w sytuacji braku migracji, w przeciwnym przypadku należy go traktować jako pewne przybliżenie.
 
 Zamierzam przyjąć, że prawdopodobieństwo emigracji w pojedynczym kroku czasowym będzie zależne wyłącznie od liczebności populacji macierzystej i będzie zadane wzorem:
 
-p_mig = 1/(1+exp(a_m*N_i+b_m))
+![p_mig = 1/(1+exp(a_m*N_i+b_m))](http://www.sciweavers.org/tex2img.php?eq=%24p_%7Bmig%7D%20%3D%20%5Cfrac%7B1%7D%7B1%2Be%5E%7B-%28a_mN_i%2Bb_m%29%7D%7D%24&bc=White&fc=Blue&im=png&fs=24&ff=modern&edit=0)
 
-Gdzie a_m i b_m to parametry związane z migracją
+Gdzie a,,m,, i b,,m,, to parametry związane z migracją
 
 Przy czym wybór płata docelowego będzie całkowicie losowy.
 
