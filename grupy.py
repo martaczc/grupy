@@ -1,13 +1,13 @@
 #!/usr/bin/python
 #for now: only asexual reproduction.
-#prawie odbagowane, problemy z pamiecia???
+#sth wrong with exceptions and dump_freq
 import sys
 sys.path.append('/home/marta/COG-ABM/src')
 
 import random
 import math
 from time import time
-from cog_abm.extras.tools import get_progressbar #dodac progressbar
+from cog_abm.extras.tools import get_progressbar 
 import pprint
 from presenter.charts import wykres
 import copy
@@ -28,16 +28,16 @@ num_groups = 10
 #d_death =
 deathProb = 0.5
 mutProb = 0.001
-a_div = -0.01
+a_div = -0.01 
 b_div = 1
-cost = -1
-d_div = 0.01
+cost = -1 
+d_div = 1
 a_migr = 0 #for now p_migr=1/100
 b_migr = -math.log(99)
-iters = 5000
+iters = 10000
 dump_freq = iters / 100
 
-max_number=0
+max_number=10000
 
 class GroupState(object):
     def __init__(self,a):
@@ -64,8 +64,8 @@ class GroupState(object):
                 else:
                     agents2.append(agent)
         self.agents=agents2
-        if self.get_NumberOfAgents() > 100000:
-            print "too many agents"
+        if self.get_NumberOfAgents() > max_number: 
+            ExpGrowthError("agents")
         return migrants 
 
 class GroupAgentState(object):
@@ -76,8 +76,8 @@ class GroupAgentState(object):
         return self.gen
     def get_sex(self):
         return self.sex
-    def get_breedProb(self,cooperation,No):
-        return breedProb(c=self.gen,coop=cooperation,N=No)
+    def get_breedProb(self,cooperation,No,cost=cost):
+        return breedProb(c=self.gen*cost,coop=cooperation,N=No)
     def mutate(self,p=mutProb):
         if random.random() < p:
             return GroupAgentState(g = self.get_genValue() + random.gauss(0,1))
@@ -97,9 +97,10 @@ class Agent(object):
         return Agent(state=self.state.mutate())
 
 class Simulation(object):
-    def __init__(self, groups):
+    def __init__(self, groups, pb=False):
         self.groups=groups
         self.statistic = []
+        self.pb = pb  #pb - show progress bar
     def dump_results(self, iter_num):
         cc = copy.deepcopy(self.groups)
         #cc = [a.deepcopy() for a in self.agents]
@@ -112,20 +113,29 @@ class Simulation(object):
     def _do_main_loop(self, iterations, dump_freq):
         start_time = time()
         log.info("Simulation start...")
-        it = xrange(iterations // dump_freq)
+        try: 
+            it = xrange(iterations // dump_freq)
+        except ExpGrowthError:
+            raise
         for i in it:
             print i
             migrants=[]
             for group in self.groups:
                 migrants.extend(group.state.iteration())
-            if len(migrants) > 100000:
-                print "too many migrants"
+            if len(migrants) > max_number: 
+                raise ExpGrowthError("migrants")
             self.migrate(migrants)
             self.dump_results((i + 1) * dump_freq)
         log.info("Simulation end. Total time: " + str(time() - start_time))
+        if self.pb:
+            it = get_progressbar()(it)
     def continue_(self, iterations=1000, dump_freq=10):
-        self._do_main_loop(iterations, dump_freq)
-        return self.statistic
+        try:
+            self._do_main_loop(iterations, dump_freq)
+        except ExpGrowthError as err:
+            err.message()
+        else:
+            return self.statistic
 
     def run(self, iterations=1000, dump_freq=10):
         """
@@ -134,18 +144,28 @@ class Simulation(object):
         iterations
         """
         self.dump_results(0)
-        self._do_main_loop(iterations, dump_freq)
-        return self.statistic
+        try:
+            self._do_main_loop(iterations, dump_freq)
+        except ExpGrowthError as err:
+            err.message()
+        else:
+            return self.statistic
+
+class ExpGrowthError(RuntimeError):
+      def __init__(self, w):
+          self.word = w
+      def message(self):
+          print "too many " + self.word
 
 
 #def deathProb(cost,help,N,a=a_death,b=b_death,c=c_death,d=d_death)
 #    return 1/(1+math.exp(-(a*N+c*help+d*cost+b)))
 
-def breedProb(coop,N,c=0,a=a_div,b=b_div,d=d_div):
-    return 1/(1+math.exp(-(a*N + b + c + d*coop)))
+def breedProb(coop,N,c,a=a_div,b=b_div,d=d_div):
+    return 1/(1+math.exp(-1*(a*N + b + c + d*coop)))
 
 def migrProb(N,a=a_migr,b=b_migr):
-    return 1/(1+math.exp(-(a*N + b)))   
+    return 1/(1+math.exp(-1*(a*N + b)))   
 
 def prepare_groups(num_agents,num_groups): 
     def prepare_agents(num_agents):
@@ -160,13 +180,13 @@ def prepare_groups(num_agents,num_groups):
 def group_experiment(num_agents, num_groups, iters): #jakie jeszcze parametry?
     groups = prepare_groups(num_agents, num_groups) #jakie jeszcze parametry?
     #topology = generate_simple_network(agents) #?
-    s = Simulation(groups) #?
+    s = Simulation(groups, pb=True) #?
     return s.run(iters, dump_freq)
     
 
 
 def analyze(results):
-    def tmp(agents):
+    def tmp(groups):
         return avg([(group.state.get_cooperation()) for group in groups])
         # ok?
     return [(it, tmp(groups)) for it, groups in results]
