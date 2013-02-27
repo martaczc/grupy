@@ -31,11 +31,12 @@ mutProb = 0.001
 a_div = -0.01 
 b_div = 1
 cost = -1 
-d_div = 1
-a_migr = 0 #for now p_migr=1/100
-b_migr = -math.log(99)
+d_div = 10
+a_migr = 0 #for now p_migr=1/1000
+b_migr = -math.log(999)
 iters = 1000
 dump_freq = iters / 100
+INIT_COOP = 1
 
 max_number=10000
 
@@ -61,11 +62,11 @@ class GroupState(object):
         agents2=[]
         migrants=[]
         N=self.get_NumberOfAgents()
-        cooperation= self.get_cooperation()
+        cooperation = self.get_cooperation()
         for agent in self.agents:    
             if random.random() < agent.state.get_breedProb(cooperation,N):
                 agents2.append(agent.breed())
-            if deathProb < random.random(): 
+            if random.random() < deathProb: 
                 if random.random() < migrProb(N):
                     migrants.append(agent)
                 else:
@@ -203,9 +204,9 @@ def migrProb(N,a=a_migr,b=b_migr):
     return 1/(1+math.exp(-1*(a*N + b)))   
 
 
-def prepare_groups(num_agents,num_groups): 
+def prepare_groups(num_agents,num_groups,init_coop): 
     def prepare_agents(num_agents):
-        agents = [Agent(state=GroupAgentState())
+        agents = [Agent(state=GroupAgentState(g=init_coop))
             for _ in xrange(num_agents)]
         return agents
     groups = [Group(state=GroupState(prepare_agents(num_agents)))
@@ -213,24 +214,24 @@ def prepare_groups(num_agents,num_groups):
     return groups
 
 
-def group_experiment(num_agents, num_groups, iters): #jakie jeszcze parametry?
-    groups = prepare_groups(num_agents, num_groups) #jakie jeszcze parametry?
-    #topology = generate_simple_network(agents) #?
-    s = Simulation(groups, pb=True) #?
+def group_experiment(num_agents, num_groups, iters): 
+    groups = prepare_groups(num_agents, num_groups,INIT_COOP) 
+    s = Simulation(groups, pb=True) 
     return s.run(iters, dump_freq)
     
 
 def analyze(results):
-    def tmp(groups):
-        return avg([(group.state.get_NumberOfAgents()) for group in groups])
-        # ok?
-    return [(it, tmp(groups)) for it, groups in results]
+    def cooperation(groups):
+        return [(group.state.get_cooperation()) for group in groups]
+    def numberOfAgents(groups):
+        return [(group.state.get_NumberOfAgents()) for group in groups]
+    return [[(it, cooperation(groups)) for it, groups in results],[(it, numberOfAgents(groups)) for it, groups in results]]
 
 
 def present_results(analysis):
     pprint.pprint(analysis)
-    wykres(analysis, "", "")  # co tutaj?
-
+    wykres(analysis[0], "time", "cooperation")  
+    wykres(analysis[1], "time", "number of agents")
 
 def main(args):
     res = \
