@@ -43,14 +43,17 @@ max_number=10000
 
 class GroupState(object):
 
-    def __init__(self,a):
+    def __init__(self,a,gr_no,n=num_agents):
         self.agents=a
+        self.count=n
+        self.group_no=gr_no
 
     def get_agent(self,i):
         return self.agents[i]
 
     def add_agent(self,agent):
         self.agents.append(agent)
+        self.count=self.count+1
 
     def get_NumberOfAgents(self):
         return len(self.agents)
@@ -65,10 +68,11 @@ class GroupState(object):
         cooperation = self.get_cooperation()
         for agent in self.agents:    
             if random.random() < agent.state.get_breedProb(cooperation,N):
-                agents2.append(agent.breed())
+                agents2.append(agent.breed(self.count))
+                self.count=self.count+1
             if random.random() < deathProb: 
                 if random.random() < migrProb(N):
-                    migrants.append(agent)
+                    migrants.append(Migrant(agent,origin=self.group_no))
                 else:
                     agents2.append(agent)
         self.agents=agents2
@@ -80,9 +84,10 @@ class GroupState(object):
 
 class GroupAgentState(object):
 
-    def __init__(self,s='f',g=0):
+    def __init__(self,n,s='f',g=0):
         self.sex=s
-        self.gen=g
+        self.gen=g     
+        self.number=n 
 
     def get_genValue(self):
         return self.gen
@@ -93,11 +98,11 @@ class GroupAgentState(object):
     def get_breedProb(self,cooperation,No,cost=cost):
         return breedProb(c=self.gen*cost,coop=cooperation,N=No)
 
-    def mutate(self,p=mutProb):
+    def mutate(self,count,p=mutProb):
         if random.random() < p:
-            return GroupAgentState(g = self.get_genValue() + random.gauss(0,1))
+            return GroupAgentState(n=count,g = self.get_genValue() + random.gauss(0,1))
         else: 
-            return GroupAgentState(g = self.get_genValue())
+            return GroupAgentState(n=count,g = self.get_genValue())
 
 
 class Group(object): 
@@ -114,26 +119,40 @@ class Agent(object):
     def __init__(self,state):
         self.state=state
 
-    def breed(self):
-        return Agent(state=self.state.mutate())
+    def breed(self,count):
+        return Agent(state=self.state.mutate(count))
+
+class Migrant(object):
+
+    def __init__(self, agent, origin, dest=None):
+        self.agent=agent
+        self.origin=origin
+        self.dest=dest
+
+    def destination(self, dest):
+        self.dest=dest
 
 
 class Simulation(object):
 
     def __init__(self, groups, pb=False):
         self.groups=groups
+        self.migrants=None
         self.statistic = []
         self.pb = pb  #pb - show progress bar
 
     def dump_results(self, iter_num):
         cc = copy.deepcopy(self.groups)
-        kr = (iter_num, cc)
+        cm = copy.deepcopy(self.migrants)
+        kr = (iter_num, cc, cm)
         self.statistic.append(kr)
 
     def migrate(self,migrants):
         for migrant in migrants:
             group=random.choice(self.groups)
-            group.add(migrant)
+            group.add(migrant.agent)
+            migrant.dest=group.state.group_no
+        self.migrants=migrants
 
     def _do_iterations(self, num_iter):
         for _ in xrange(num_iter):
@@ -206,10 +225,10 @@ def migrProb(N,a=a_migr,b=b_migr):
 
 def prepare_groups(num_agents,num_groups,init_coop): 
     def prepare_agents(num_agents):
-        agents = [Agent(state=GroupAgentState(g=init_coop))
-            for _ in xrange(num_agents)]
+        agents = [Agent(state=GroupAgentState(n=i,g=init_coop))
+            for i in xrange(num_agents)]
         return agents
-    groups = [Group(state=GroupState(prepare_agents(num_agents)))
+    groups = [Group(state=GroupState(prepare_agents(num_agents),gr_no=n))
         for n in xrange(num_groups)]
     return groups
 
@@ -225,7 +244,7 @@ def analyze(results):
         return [(group.state.get_cooperation()) for group in groups]
     def numberOfAgents(groups):
         return [(group.state.get_NumberOfAgents()) for group in groups]
-    return [[(it, cooperation(groups)) for it, groups in results],[(it, numberOfAgents(groups)) for it, groups in results]]
+    return [[(it, cooperation(groups)) for it, groups,migrants in results],[(it, numberOfAgents(groups)) for it, groups,migrants in results]]
 
 
 def present_results(analysis):
@@ -235,7 +254,7 @@ def present_results(analysis):
 
 def main(args):
     res = \
-    group_experiment(num_agents, num_groups, iters) #co jeszcze?
+    group_experiment(num_agents, num_groups, iters)
     analysis = analyze(res)
     #print "done"
     present_results(analysis)
