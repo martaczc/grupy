@@ -6,7 +6,7 @@ pygame.init()
 yellow = 255, 255, 153
 blue = 0, 0, 255
 black = 0,0,0
-num_pathes = 9
+num_pathes = 11
 screen = pygame.display.set_mode()
 w,h = screen.get_width(),screen.get_height()
 print w,h
@@ -21,11 +21,6 @@ m = minimum(w,h)
 external_margin = m/10 
 interwal = 0.2
 
-#center = w/2,h/2
-#radius = minimum(w,h)/6
-
-'''class path:
-    def __init__(self, radius, center)'''
 
 def path_parameters(num_pathes, interwal, w, m, external_margin):
     root = math.sqrt(num_pathes)
@@ -68,12 +63,36 @@ def random_from_circle(center,radius):
     return [r*math.cos(t)*radius + center[0], r*math.sin(t)*radius + center[1]]  
 
 class Ind:
+
     def __init__(self, position, size, color): 
         self.position = [int(p) for p in position]
         self.size = int(size)
-        self.color = color 
+        self.color = color
+ 
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.position, self.size)
+
+class Arrow:
+
+    def __init__(self, start, end, color, width):
+        self.start = start
+        self.end = end
+        self.color = color
+        self.width = width
+
+    def draw(self, screen):
+        pygame.draw.line(screen, self.color, self.start, self.end, self.width)
+        horizontal = [-self.start[0] + self.end[0], -self.start[1] + self.end[1]] 
+        horizontal_length = math.sqrt(math.pow(horizontal[0], 2) + math.pow(horizontal[1],2)) 
+        arrowhead_size = 5*self.width
+        y = horizontal[0]/horizontal_length
+        x = -horizontal[1]/horizontal_length
+        lateral = [x,y]
+        middle_point = [self.end[0] - 2*arrowhead_size*horizontal[0]/horizontal_length, self.end[1] - 2*arrowhead_size*horizontal[1]/horizontal_length]
+        upper_point = [middle_point[0] + arrowhead_size*lateral[0], middle_point[1] + arrowhead_size*lateral[1]]
+        lower_point = [middle_point[0] - arrowhead_size*lateral[0], middle_point[1] - arrowhead_size*lateral[1]]
+        pygame.draw.polygon(screen, self.color, [self.end, upper_point, lower_point])
+        
 
 
 class Path:
@@ -89,7 +108,10 @@ class Path:
         pygame.draw.circle(screen, self.color, self.center, self.radius)
         for ind in self.individuals:
             ind.draw(screen)
-        
+       
+#class Animation:
+
+#    def __init__(self, num_pathes, data, interval back_color, ind_colors)
 
 
 parameters = path_parameters(num_pathes, interwal, w, m, external_margin)
@@ -102,6 +124,9 @@ pathes = [Path(center, radius, yellow, ind_colors) for center in centers]
 screen.fill(black)
 for path in pathes:
     path.draw(screen)
+red = 255,0,0
+arrow = Arrow(centers[0], centers[1], red, 1)
+arrow.draw(screen)
 pygame.display.flip()
 
 '''radius = parameters['radius']
